@@ -1,6 +1,5 @@
 [semantic_release]
 assets = ["README.md", "LICENSE"]
-build_command = """python3 ./scripts/bump_version.py"""
 commit_parser = "angular"
 
 [semantic_release.changelog]
@@ -16,12 +15,9 @@ exclude_commit_patterns = [
 ]
 
 [semantic_release.branches.main]
-match = "(main|master)"
+match = "^main$"
 prerelease = false
 
 [semantic_release.remote]
 type = "github"
 token = { env = "GH_TOKEN" }
-
-[semantic_release.publish]
-upload_to_vcs_release = false
