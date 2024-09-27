@@ -2,7 +2,7 @@
 name: Documentation
 about: I found an error or gap in the docs
 labels:
-    - docs
+    - documentation
     - triage
 ---
 

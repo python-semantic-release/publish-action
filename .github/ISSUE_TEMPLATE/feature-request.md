@@ -2,7 +2,7 @@
 name: Feature Request
 about: Suggest a new idea
 labels:
-    - feature
+    - enhancement
     - triage
 ---
 
