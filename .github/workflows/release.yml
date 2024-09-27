@@ -53,6 +53,7 @@ jobs:
           ref: ${{ github.ref_name }}
 
       - name: Python Semantic Release
+        id: release
         uses: python-semantic-release/python-semantic-release@v9.8.8
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -60,3 +61,21 @@ jobs:
           force: ${{ github.event.inputs.bump-version }}
           prerelease: ${{ github.event.inputs.as-prerelease }}
           changelog: false
+
+      - name: Update Minor Release Tag Reference
+        if: steps.release.outputs.released == 'true'
+        env:
+          FULL_VERSION_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          MINOR_VERSION_TAG=$(echo $FULL_VERSION_TAG | cut -d. -f1,2)
+          git tag --force --annotate "$MINOR_VERSION_TAG" "${VERSION}^{}" -m "$MINOR_VERSION_TAG"
+          git push -u origin "$MINOR_VERSION_TAG" --force
+
+      - name: Update Major Release Tag Reference
+        if: steps.release.outputs.released == 'true'
+        env:
+          FULL_VERSION_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          MAJOR_VERSION_TAG=$(echo $FULL_VERSION_TAG | cut -d. -f1)
+          git tag --force --annotate "$MAJOR_VERSION_TAG" "${VERSION}^{}" -m "$MAJOR_VERSION_TAG"
+          git push -u origin "$MAJOR_VERSION_TAG" --force
