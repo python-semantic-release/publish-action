@@ -49,3 +49,6 @@ jobs:
           push: false
           platforms: linux/amd64
           tags: ${{ env.TEST_CONTAINER_TAG }}
+
+      - name: Test | Action Container
+        run: bash tests/run.sh
