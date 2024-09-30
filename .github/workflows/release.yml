@@ -19,22 +19,18 @@ on:
         required: true
         default: false
 
+
 # default token permissions = none
 permissions: {}
 
-jobs:
-  build:
-    name: Verify Docker Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          ref: ${{ github.ref_name }}
 
-      - name: Build Docker Image
-        run: |
-          docker build -t psr-upload-to-release:latest .
+jobs:
+
+  validate:
+    uses: ./.github/workflows/validate.yml
+    permissions: {}
+    secrets: {}
+
 
   release:
     name: Semantic Release
