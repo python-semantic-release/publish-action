@@ -1,0 +1,51 @@
+name: Validation Pipeline
+
+on:
+  # Enable workflow as callable from other workflow
+  workflow_call:
+    # inputs: none required ATT
+    # outputs: none required ATT
+    # secrets: none required ATT
+
+
+# set default Token permissions = none
+permissions: {}
+
+
+jobs:
+
+  commitlint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup | Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+
+      - name: Validate | Commitlint
+        uses: wagoid/commitlint-github-action@v6
+
+
+  validate-action:
+    name: Validate Action Build & Execution
+    runs-on: ubuntu-latest
+    env:
+      TEST_CONTAINER_TAG: psr-publish-action:latest
+    steps:
+      - name: Setup | Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.sha }}
+
+      - name: Build | Action Container
+        id: container-builder
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true # add to `docker images`
+          push: false
+          platforms: linux/amd64
+          tags: ${{ env.TEST_CONTAINER_TAG }}
