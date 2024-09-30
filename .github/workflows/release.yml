@@ -34,21 +34,30 @@ jobs:
 
   release:
     name: Semantic Release
+    concurrency: release
     runs-on: ubuntu-latest
-    concurrency: push
-    needs: [build]
+    if: github.repository == 'python-semantic-release/publish-action'
+    needs:
+      - validate
 
     permissions:
-      id-token: write
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      # Note: we need to checkout the repository at the workflow sha in case during the workflow
+      # the branch was updated. To keep PSR working with the configured release branches,
+      # we force a checkout of the desired release branch but at the workflow sha HEAD.
+      - name: Setup | Checkout Repository at workflow sha
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.sha }}
 
-      - name: Python Semantic Release
+      - name: Setup | Force correct release branch on workflow sha
+        run: |
+          git checkout -B ${{ github.ref_name }}
+
+      - name: Release | Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.9.0
         with:
@@ -58,7 +67,7 @@ jobs:
           prerelease: ${{ github.event.inputs.as-prerelease }}
           changelog: false
 
-      - name: Update Minor Release Tag Reference
+      - name: Release | Update Minor Release Tag Reference
         if: steps.release.outputs.released == 'true' && steps.release.outputs.is_prerelease == 'false'
         env:
           FULL_VERSION_TAG: ${{ steps.release.outputs.tag }}
@@ -67,7 +76,7 @@ jobs:
           git tag --force --annotate "$MINOR_VERSION_TAG" "${FULL_VERSION_TAG}^{}" -m "$MINOR_VERSION_TAG"
           git push origin "$MINOR_VERSION_TAG" --force
 
-      - name: Update Major Release Tag Reference
+      - name: Release | Update Major Release Tag Reference
         if: steps.release.outputs.released == 'true' && steps.release.outputs.is_prerelease == 'false'
         env:
           FULL_VERSION_TAG: ${{ steps.release.outputs.tag }}
