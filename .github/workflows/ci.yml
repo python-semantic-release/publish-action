@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: # Target branches
+      - main
+
+# default token permissions = none
+permissions: {}
+
+jobs:
+  validate:
+    # condition: Execute IFF it is protected branch update, or a PR that is NOT in a draft state
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
+    uses: ./.github/workflows/validate.yml
+    permissions: {}
+    secrets: {}
