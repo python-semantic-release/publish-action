@@ -17,7 +17,6 @@ test_without_tag() {
     local test_name="Test without tag"
 
     # Create expectations & set env variables that will be passed in for Docker command
-    local WITH_VAR_GITHUB_TOKEN="ghp_1x2x3x4x5x6x7x8x9x0x1x2x3x4x5x6x7x8x9x0"
     local WITH_VAR_ROOT_OPTIONS="--noop -vv"
     local expected_psr_cmd=".*/bin/semantic-release $WITH_VAR_ROOT_OPTIONS publish"
 

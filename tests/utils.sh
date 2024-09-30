@@ -25,6 +25,7 @@ run_test() {
     local test_name="$1"
 
     # Set Defaults based on action.yml
+    [ -z "$WITH_VAR_GITHUB_TOKEN" ] && local WITH_VAR_GITHUB_TOKEN="ghp_1x2x3x4x5x6x7x8x9x0x1x2x3x4x5x6x7x8x9x0"
     [ -z "$WITH_VAR_DIRECTORY" ] && local WITH_VAR_DIRECTORY="."
     [ -z "$WITH_VAR_ROOT_OPTIONS" ] && local WITH_VAR_ROOT_OPTIONS="-v"
 
