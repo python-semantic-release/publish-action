@@ -44,7 +44,7 @@ jobs:
         id: container-builder
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./src
           load: true # add to `docker images`
           push: false
           platforms: linux/amd64

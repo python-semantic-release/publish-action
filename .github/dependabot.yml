@@ -4,7 +4,7 @@ updates:
 
   # Track PSR new releases automatically
   - package-ecosystem: "pip"
-    directory: "/"
+    directory: "src/"
     schedule:
       interval: "daily"
     commit-message:
@@ -18,7 +18,7 @@ updates:
 
   # Maintain dependencies for Docker (ie our GitHub Action)
   - package-ecosystem: "docker"
-    directory: "/"
+    directory: "src/"
     schedule:
       interval: "monthly"
     labels:
