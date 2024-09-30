@@ -22,13 +22,25 @@ create_example_project() {
     mkdir -vp "$(dirname "$EXAMPLE_PROJECT_DIR")"
     cp -r "${EXAMPLE_PROJECT_BASE_DIR}" "$EXAMPLE_PROJECT_DIR"
 
-    pushd "$EXAMPLE_PROJECT_DIR" >/dev/null || return 1
     log "Constructing git history in repository"
+    pushd "$EXAMPLE_PROJECT_DIR" >/dev/null || return 1
+
+    # Initialize and configure git (remove any signature requirements)
     git init
-    git add .
-    git commit -m "Initial commit"
+    git config --local user.email "developer@users.noreply.github.com"
+    git config --local user.name "developer"
+    git config --local commit.gpgSign false
+    git config --local tag.gpgSign false
     git remote add origin "https://github.com/python-semantic-release/example-project.git"
 
+    # Create initial commit and tag
+    git add .
+    git commit -m "Initial commit"
+
+    # set default branch to main
+    git branch -m main
+
+    # Create the first release (with commit & tag)
     cat <<EOF >pyproject.toml
 [project]
 name = "example"
