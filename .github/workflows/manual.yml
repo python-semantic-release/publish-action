@@ -1,0 +1,14 @@
+name: CI (Manual)
+
+on:
+  # Enable execution directly from Actions page
+  workflow_dispatch:
+
+# default token permissions = none
+permissions: {}
+
+jobs:
+  validate:
+    uses: ./.github/workflows/validate.yml
+    permissions: {}
+    secrets: {}
