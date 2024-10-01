@@ -14,6 +14,67 @@ permissions: {}
 
 jobs:
 
+  eval-changes:
+    name: Evaluate changes
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50 # Must at least retrieve a set of commits to compare changes
+          # primarily because of any 'Rebase and Merge' PR action in GitHub
+
+      - name: Evaluate | Check specific file types for changes
+        id: changed-files
+        uses: tj-actions/changed-files@v45.0.2
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        with:
+          base_sha: ${{ github.event.push.before || github.event.pull_request.base.sha }}
+          # action.yml is not considered as src because we can't test it
+          files_yaml: |
+            ci:
+              - .github/workflows/validate.yml
+              - .github/workflows/ci.yml
+            docs:
+              - AUTHORS.rst
+              - CONTRIBUTING.rst
+              - LICENSE
+              - README.md
+            src:
+              - src/**
+            tests:
+              - tests/**
+
+      - name: Evaluate | Detect if any of the combinations of file sets have changed
+        id: all-changes
+        if: ${{ steps.changed-files.outcome == 'success' }}
+        run: |
+          printf '%s\n' "any_changed=false" >> $GITHUB_OUTPUT
+          if [ "${{ steps.changed-files.outputs.ci_any_changed }}" == "true" ] || \
+              [ "${{ steps.changed-files.outputs.docs_any_changed }}" == "true" ] || \
+              [ "${{ steps.changed-files.outputs.src_any_changed }}" == "true" ] || \
+              [ "${{ steps.changed-files.outputs.tests_any_changed }}" == "true" ]; then
+              printf '%s\n' "any_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Evaluate | Handle manual trigger (lie that all files changed)
+        id: manual-trigger
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          printf '%s\n' "ci_any_changed=true" >> $GITHUB_OUTPUT
+          printf '%s\n' "docs_any_changed=true" >> $GITHUB_OUTPUT
+          printf '%s\n' "src_any_changed=true" >> $GITHUB_OUTPUT
+          printf '%s\n' "tests_any_changed=true" >> $GITHUB_OUTPUT
+          printf '%s\n' "any_changed=true" >> $GITHUB_OUTPUT
+
+    outputs:
+      any-file-changes: ${{ steps.all-changes.outputs.any_changed || steps.manual-trigger.outputs.any_changed }}
+      ci-changes: ${{ steps.changed-files.outputs.ci_any_changed || steps.manual-trigger.outputs.ci_any_changed }}
+      doc-changes: ${{ steps.changed-files.outputs.docs_any_changed || steps.manual-trigger.outputs.docs_any_changed }}
+      src-changes: ${{ steps.changed-files.outputs.src_any_changed || steps.manual-trigger.outputs.src_any_changed }}
+      test-changes: ${{ steps.changed-files.outputs.tests_any_changed || steps.manual-trigger.outputs.tests_any_changed }}
+
+
   commitlint:
     runs-on: ubuntu-latest
 
@@ -31,8 +92,13 @@ jobs:
   validate-action:
     name: Validate Action Build & Execution
     runs-on: ubuntu-latest
+    if: needs.eval-changes.outputs.src-changes == 'true' || needs.eval-changes.outputs.test-changes == 'true' || needs.eval-changes.outputs.ci-changes == 'true'
+    needs:
+      - eval-changes
+
     env:
       TEST_CONTAINER_TAG: psr-publish-action:latest
+
     steps:
       - name: Setup | Checkout Repository
         uses: actions/checkout@v4
