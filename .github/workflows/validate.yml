@@ -42,7 +42,7 @@ jobs:
 
       - name: Build | Action Container
         id: container-builder
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./src
           load: true # add to `docker images`
