@@ -15,7 +15,7 @@ Building the Action Environment
 
 .. code:: bash
 
-    docker build -t psr-publish-action:latest .
+    docker build -t psr-publish-action:latest ./src
 
 Local Testing
 -------------
