@@ -19,6 +19,7 @@ inputs:
       GitHub token used to upload artifacts. Requires permission to create and
       edit releases.
     required: true
+    default: ${{ github.token }}
 
   root_options:
     description: |
