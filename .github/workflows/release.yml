@@ -71,6 +71,8 @@ jobs:
         if: steps.release.outputs.released == 'true' && steps.release.outputs.is_prerelease == 'false'
         env:
           FULL_VERSION_TAG: ${{ steps.release.outputs.tag }}
+          GIT_COMMITTER_NAME: github-actions
+          GIT_COMMITTER_EMAIL: actions@users.noreply.github.com
         run: |
           MINOR_VERSION_TAG="$(printf '%s\n' "$FULL_VERSION_TAG" | cut -d. -f1,2)"
           git tag --force --annotate "$MINOR_VERSION_TAG" "${FULL_VERSION_TAG}^{}" -m "$MINOR_VERSION_TAG"
@@ -80,6 +82,8 @@ jobs:
         if: steps.release.outputs.released == 'true' && steps.release.outputs.is_prerelease == 'false'
         env:
           FULL_VERSION_TAG: ${{ steps.release.outputs.tag }}
+          GIT_COMMITTER_NAME: github-actions
+          GIT_COMMITTER_EMAIL: actions@users.noreply.github.com
         run: |
           MAJOR_VERSION_TAG="$(printf '%s\n' "$FULL_VERSION_TAG" | cut -d. -f1)"
           git tag --force --annotate "$MAJOR_VERSION_TAG" "${FULL_VERSION_TAG}^{}" -m "$MAJOR_VERSION_TAG"
