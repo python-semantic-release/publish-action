@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.13-slim-bookworm
 ARG WORK_DIR="/opt/psr"
 
 WORKDIR ${WORK_DIR}
