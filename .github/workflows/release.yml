@@ -48,7 +48,7 @@ jobs:
       # the branch was updated. To keep PSR working with the configured release branches,
       # we force a checkout of the desired release branch but at the workflow sha HEAD.
       - name: Setup | Checkout Repository at workflow sha
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:
           fetch-depth: 0
           ref: ${{ github.sha }}
