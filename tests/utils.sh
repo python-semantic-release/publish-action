@@ -22,11 +22,15 @@ explicit_run_cmd() {
 }
 
 run_test() {
-    local test_name="$1"
+    local test_name="${1:?Test name not provided}"
+    test_name="${test_name//_/ }"
+    test_name="$(tr "[:lower:]" "[:upper:]" <<< "${test_name:0:1}")${test_name:1}"
 
     # Set Defaults based on action.yml
     [ -z "$WITH_VAR_DIRECTORY" ] && local WITH_VAR_DIRECTORY="."
-    [ -z "$WITH_VAR_ROOT_OPTIONS" ] && local WITH_VAR_ROOT_OPTIONS="-v"
+    [ -z "$WITH_VAR_CONFIG_FILE" ] && local WITH_VAR_CONFIG_FILE=""
+    [ -z "$WITH_VAR_NO_OPERATION_MODE" ] && local WITH_VAR_NO_OPERATION_MODE="false"
+    [ -z "$WITH_VAR_VERBOSITY" ] && local WITH_VAR_VERBOSITY="1"
 
     # Extract all WITH_VAR_ variables dynamically from environment
     local ENV_ARGS=()
