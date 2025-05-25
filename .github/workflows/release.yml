@@ -62,7 +62,8 @@ jobs:
         uses: python-semantic-release/python-semantic-release@092ace20f4ebed6a656da54b499076f1a5b803c8  # v10.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          root_options: "-vv -c releaserc.toml"
+          verbosity: 2
+          config_file: releaserc.toml
           force: ${{ github.event.inputs.bump-version }}
           prerelease: ${{ github.event.inputs.as-prerelease }}
           changelog: false
