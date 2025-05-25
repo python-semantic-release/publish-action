@@ -1,6 +1,6 @@
 [semantic_release]
 assets = ["README.md", "LICENSE"]
-commit_parser = "angular"
+commit_parser = "conventional"
 
 [semantic_release.changelog]
 exclude_commit_patterns = [
