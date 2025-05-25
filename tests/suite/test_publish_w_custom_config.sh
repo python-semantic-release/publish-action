@@ -8,7 +8,7 @@ if ! [ "${UTILS_LOADED}" = "true" ]; then
     source "$__directory__/../utils.sh"
 fi
 
-test_without_tag() {
+test_with_custom_config() {
     # Using default configuration within PSR with no modifications
     # triggering the NOOP mode to prevent errors since the repo doesn't exist
     # We are just trying to test that the root options are passed to the action
@@ -19,8 +19,8 @@ test_without_tag() {
     # Create expectations & set env variables that will be passed in for Docker command
     local WITH_VAR_GITHUB_TOKEN="ghp_1x2x3x4x5x6x7x8x9x0x1x2x3x4x5x6x7x8x9x0"
     local WITH_VAR_NO_OPERATION_MODE="true"
-    local WITH_VAR_VERBOSITY="1"
-    local expected_psr_cmd=".*/bin/semantic-release -v --noop publish"
+    local WITH_VAR_CONFIG_FILE="releaserc.toml"
+    local expected_psr_cmd=".*/bin/semantic-release -v --config releaserc.toml --noop publish"
 
     # Execute the test & capture output
     # Fatal errors if exit code is not 0

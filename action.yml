@@ -8,6 +8,15 @@ branding:
   color: orange
 
 inputs:
+
+  config_file:
+    description: |
+      Path to a custom semantic-release configuration file. By default, an empty
+      string will look for a pyproject.toml file in the current directory. This is the same
+      as passing the `-c` or `--config` parameter to semantic-release.
+    default: ""
+    required: false
+
   directory:
     description: |
       Sub-directory to change into before running semantic-release publish
@@ -20,18 +29,27 @@ inputs:
       edit releases.
     required: true
 
-  root_options:
+  no_operation_mode:
     description: |
-      Additional options for the root `semantic-release` command.
-      Example: -vv --noop
+      If set to true, the github action will pass the `--noop` parameter to
+      semantic-release. This will cause semantic-release to run in "no operation"
+      mode. See the documentation for more information on this parameter.
+    default: "false"
     required: false
-    default: "-v"
 
   tag:
     description: |
       The tag corresponding to the GitHub Release that the artifacts should
       be published to. Defaults to 'latest', in which case the latest tag
       will be identified by Python Semantic Release and used to publish to.
+    required: false
+
+  verbosity:
+    description: |
+      Set the verbosity level of the output as the number of -v's to pass to
+      semantic-release. 0 is no extra output, 1 is info level output, 2 is
+      debug output, and 3 is silly debug level of output.
+    default: "1"
     required: false
 
 runs:
