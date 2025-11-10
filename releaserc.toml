@@ -1,4 +1,5 @@
 [semantic_release]
+add_partial_tags = true
 assets = ["README.md", "LICENSE"]
 commit_parser = "conventional"
 
