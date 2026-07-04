@@ -18,6 +18,10 @@ exclude_commit_patterns = [
 match = "^main$"
 prerelease = false
 
+[semantic_release.branches.maintenance]
+match = "^releases/v9"
+prerelease = false
+
 [semantic_release.remote]
 type = "github"
 token = { env = "GH_TOKEN" }
